@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burgundy Noir // Pinterest & History Chapter</title>
+    <style>
+        :root {
+            --burgundy-dark: #120104;
+            --burgundy-main: #4a0410;
+            --burgundy-bright: #800020;
+            --burgundy-light: #a31631;
+            --cherry-black: #080002;
+            --cream: #fbf7f4;
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--cherry-black);
+            color: var(--cream);
+            font-family: Georgia, 'Times New Roman', serif;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%; left: -50%; width: 200vw; height: 200vh;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(74, 4, 16, 0.45) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(128, 0, 32, 0.35) 0%, transparent 45%);
+            animation: ambientNebula 25s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(circle, rgba(212, 175, 55, 0.15) 1.5px, transparent 1.5px),
+                radial-gradient(circle, rgba(212, 175, 55, 0.08) 2.5px, transparent 2.5px);
+            background-size: 60px 60px, 110px 110px;
+            animation: megaSparkle 30s linear infinite;
+            opacity: 0.8;
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        header {
+            height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(to bottom, transparent, var(--cherry-black));
+            padding: 20px;
+        }
+
+        header p {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 10px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px var(--gold-glow);
+            animation: blurPulse 3s ease-in-out infinite alternate;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.1;
+            text-shadow: 0 4px 30px rgba(74, 4, 16, 0.95);
+            animation: titleEntrance 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        header h1 span {
+            display: block;
+            font-size: 1.3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-style: normal;
+            letter-spacing: 5px;
+            color: rgba(251, 247, 244, 0.7);
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            border-top: 1px solid rgba(251, 247, 244, 0.08);
+            border-bottom: 1px solid rgba(251, 247, 244, 0.08);
+            padding: 12px;
+            position: sticky;
+            top: 0;
+            background: rgba(8, 0, 2, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .tab-trigger {
+            background: none;
+            border: 1px solid transparent;
+            color: rgba(251, 247, 244, 0.6);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            padding: 10px 18px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+            border-radius: 30px;
+        }
+
+        .tab-trigger:hover {
+            color: var(--cream);
+            background: rgba(74, 4, 16, 0.4);
+        }
+
+        .tab-trigger.active {
+            color: var(--gold);
+            background: rgba(74, 4, 16, 0.8);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .tab-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .tab-view.active {
+            display: block;
+            animation: viewEntrance 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .editorial-intro {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            text-align: center;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: rgba(251, 247, 244, 0.9);
+            font-style: italic;
+        }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+        }
+
+        @media (max-width: 768px) { .grid-info { grid-template-columns: 1fr; } }
+
+        .info-card {
+            background: linear-gradient(135deg, rgba(74, 4, 16, 0.35), rgba(18, 1, 4, 0.5));
+            border: 1px solid rgba(214, 175, 55, 0.12);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-card-content { padding: 30px; }
+
+        .img-container {
+            width: 100%;
+            height: 260px;
+            background: rgba(74, 4, 16, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card img, .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .info-card:hover img { transform: scale(1.05); }
+        .info-card:hover { border-color: var(--gold); box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15); }
+
+        .info-card h2 {
+            font-family: -apple-system, sans-serif;
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(214, 175, 55, 0.15);
+            padding-bottom: 8px;
+        }
+
+        .info-card p { font-size: 1rem; line-height: 1.6; color: rgba(251, 247, 244, 0.85); margin-bottom: 10px; }
+
+        .pinterest-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-item {
+            background: rgba(18, 1, 4, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            transition: all 0.4s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .gallery-item:hover img { transform: scale(1.04); }
+
+        .gallery-item .img-box {
+            height: 380px;
+            overflow: hidden;
+            background: rgba(18,1,4,0.8);
+        }
+
+        .gallery-text { padding: 20px; border-top: 1px solid rgba(212,175,55,0.1); }
+        .gallery-text h4 { color: var(--gold); font-size: 1.05rem; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;}
+        .gallery-text p { font-size: 0.9rem; color: rgba(251,247,244,0.75); line-height: 1.4; }
+
+        .quiz-box { max-width: 650px; margin: 0 auto; background: rgba(18, 1, 4, 0.85); border: 1px solid rgba(212, 175, 55, 0.3); padding: 35px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .quiz-question { font-size: 1.3rem; margin-bottom: 25px; text-align: center; font-style: italic; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+        .quiz-btn { width: 100%; background: rgba(74, 4, 16, 0.3); border: 1px solid rgba(212,175,55,0.2); color: var(--cream); padding: 14px; border-radius: 10px; cursor: pointer; text-align: left; font-size: 0.95rem; transition: all 0.3s; }
+        .quiz-btn:hover { background: rgba(74, 4, 16, 0.7); border-color: var(--gold); transform: translateX(3px); }
+        .quiz-btn.correct { background: #1b4d22 !important; border-color: #4caf50 !important; }
+        .quiz-btn.wrong { background: #661717 !important; border-color: #f44336 !important; }
+        .score-indicator { margin-top: 20px; text-align: center; font-size: 1.1rem; color: var(--gold); }
+
+        .wish-section-grid { display: grid; grid-template-columns: 350px 1fr; gap: 35px; }
+        @media (max-width: 900px) { .wish-section-grid { grid-template-columns: 1fr; } }
+        .wish-form-panel { background: rgba(18,1,4,0.6); border: 1px solid rgba(212,175,55,0.2); padding: 25px; border-radius: 16px; height: fit-content; }
+        .wish-form-panel h3 { font-size: 1.15rem; color: var(--gold); text-transform: uppercase; margin-bottom: 15px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 0.8rem; text-transform: uppercase; color: rgba(251,247,244,0.6); margin-bottom: 5px; }
+        .input-group input, .input-group textarea { width: 100%; background: rgba(8,0,2,0.8); border: 1px solid rgba(212,175,55,0.2); border-radius: 8px; padding: 12px; color: var(--cream); outline: none; font-family: inherit; }
+        .submit-wish-btn { width: 100%; background: var(--burgundy-main); border: 1px solid var(--gold); color: var(--cream); padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
+        .submit-wish-btn:hover { background: var(--burgundy-bright); }
+
+        .wish-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .wish-card { background: linear-gradient(135deg, rgba(74,4,16,0.5), rgba(18,1,4,0.7)); border-top: 3px solid var(--gold); padding: 18px; border-radius: 0 0 12px 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); animation: cardSpawn 0.4s ease-out forwards; }
+        .wish-card p { font-style: italic; line-height: 1.4; color: rgba(251, 247, 244, 0.9); margin-bottom: 10px; font-size: 0.95rem; }
+        .wish-card .author { font-size: 0.8rem; text-transform: uppercase; color: var(--gold); text-align: right; }
+
+        @keyframes megaSparkle { from { background-position: 0 0, 30px 40px; } to { background-position: 0 1000px, 30px 1040px; } }
+        @keyframes ambientNebula { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(2%, 2%) scale(1.03); } }
+        @keyframes blurPulse { from { filter: blur(0.2px); } to { filter: blur(0.5px); } }
+        @keyframes titleEntrance { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes viewEntrance { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes cardSpawn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        footer { text-align: center; padding: 30px; font-size: 0.75rem; letter-spacing: 2px; color: rgba(251, 247, 244, 0.3); margin-top: 40px; border-top: 1px solid rgba(251, 247, 244, 0.05); text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+    <div class="app-wrapper">
+        <header>
+            <p>Seasonal Trend Curation</p>
+            <h1>The Burgundy Chapter<span>Самый трендовый цвет осени</span></h1>
+        </header>
+
+        <nav>
+            <button class="tab-trigger active" onclick="switchSection(event, 'about-section')">Что за цвет?</button>
+            <button class="tab-trigger" onclick="switchSection(event, 'history-section')">История цвета</button>
+            <button class="tab-trigger" onclick="switchSection(event, 'pinterest-section')">Эстетика & Pinterest</button>
+            <button class="tab-trigger" onclick="switchSection(event, 'fav-section')">Почему он популярен?</button>
+            <button class="tab-trigger" onclick="switchSection(event, 'quiz-section')">Викторина</button>
+            <button class="tab-trigger" onclick="switchSection(event, 'wish-section')">Стена Пожеланий</button>
+<button class="tab-trigger" onclick="switchSection(event, 'encyclopedia-section')">Энциклопедия Бургунди</button>
+
+        </nav>
+
+        <main class="main-container">
+            <!-- ВКЛАДКА 1: ЧТО ЗА ЦВЕТ -->
+            <div id="about-section" class="tab-view active">
+                <div class="editorial-intro">
+                    Название отсылает к французскому региону Бургундия, известному благородными красными винами глубокого рубинового оттенка.
+                </div>
+                <div class="grid-info">
+                    <div class="info-card">
+                        <div class="img-container">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\i (2).webp" alt="Burgundy Silk">
+                        </div>
+                        <div class="info-card-content">
+                            <h2>Магия Фактурности</h2>
+                            <p>Этот оттенок феноменально раскрывается в материалах: матовом бархате, глянцевой коже и струящемся сатине или шёлке.</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="img-container">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\b91151e2cc22b69d37be81593fdeea63.jpg" alt="Color Texture">
+                        </div>
+                        <div class="info-card-content">
+                            <h2>Хамелеон освещения</h2>
+                            <p>Одна из потрясающих особенностей бургунди — его гиперчувствительность к свету. Один и тот же предмет полностью меняет свой вид в течение суток.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 2: ИСТОРИЯ ЦВЕТА -->
+            <div id="history-section" class="tab-view">
+                <div class="editorial-intro">
+                    Глубокий экскурс в происхождение и влияние оттенка на подсознание человека.
+                </div>
+                <div class="grid-info">
+                    <div class="info-card">
+                        <div class="img-container">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\i.webp" alt="History Texture">
+                        </div>
+                        <div class="info-card-content">
+                            <h2>Исторический след</h2>
+                            <p>Корни этого оттенка уходят в античность. Пурпурные и глубокие винные одежды в Римской империи служили маркером высочайшего сословия.</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="img-container">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\224d3d8f1aecfa54c4f4a08a6beb42ad.jpg" alt="Classic interior">
+                        </div>
+                        <div class="info-card-content">
+                            <h2>Винтажная роскошь</h2>
+                            <p>Свое современное название цвет закрепил в конце XIX века в честь знаменитых виноградников Бургундии, став символом роскоши.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 3: ЭСТЕТИКА И ПИНТЕРЕСТ -->
+            <div id="pinterest-section" class="tab-view">
+                <div class="editorial-intro">
+                    Подборка ключевых визуальных образов в стиле эстетики Pinterest — автомобили, спелые ягоды, парфюмерия и глянец.
+                </div>
+                <div class="pinterest-gallery">
+                    <div class="gallery-item">
+                        <div class="img-box">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\05331994e6fa970401480159be159732.png" alt="Retro Car">
+                        </div>
+                        <div class="gallery-text">
+                            <h4>Винтажный Авто-Люкс</h4>
+                            <p>Эстетика глубокого глянцевого кузова благородного цвета.</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="img-box">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\479a59a99d93544bc703a2a685db1c2a.jpg" alt="Cherries">
+                        </div>
+                        <div class="gallery-text">
+                            <h4>Спелые Ягоды</h4>
+                            <p>Природные сочные градиенты спелых осенних плодов черешни.</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="img-box">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\52904612c2d30035db0c7b382f82c683.jpg" alt="Cosmetics">
+                        </div>
+                        <div class="gallery-text">
+                            <h4>Глянец & Рок</h4>
+                            <p>Идеальный бархатный макияж губ и парфюмерные флаконы темного стекла.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 4: ПОЧЕМУ ОН ПОПУЛЯРЕН -->
+            <div id="fav-section" class="tab-view">
+                <div class="editorial-intro">
+                    Личный взгляд на феномен этого цвета: почему он влюбляет в себя с первого взгляда.
+                </div>
+                <div class="grid-info">
+                    <div class="info-card">
+                        <div class="img-container">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\burgundy-silk-drapery-generate-ai-photo.jpg" alt="Aesthetic Mood">
+                        </div>
+                        <div class="info-card-content">
+                            <h2>Атмосфера уюта и тепла</h2>
+                            <p>Бургунди — это синоним осени. Он ассоциируется со старыми книгами, дорогим кашемировым шарфом и пламенем свечи.</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="img-container">
+                            <img src="C:\Users\SaltaevaRS\Desktop\сайт\i (1).webp" alt="Texture">
+                        </div>
+                        <div class="info-card-content">
+                            <h2>Характер и стержень</h2>
+                            <p>Этот оттенок выбирают люди со сформированным внутренним вкусом. Любой простой предмет выглядит массивно и статусно.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 5: ВИКТОРИНА -->
+            <div id="quiz-section" class="tab-view">
+                <div class="quiz-box">
+                    <div class="quiz-question" id="questionField">Загрузка вопроса...</div>
+                    <div class="quiz-options" id="optionsBox"></div>
+                    <div class="score-indicator" id="scoreIndicator"></div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 6: СТЕНА ПОЖЕЛАНИЙ -->
+            <div id="wish-section" class="tab-view">
+                <div class="wish-section-grid">
+                    <div class="wish-form-panel">
+                        <h3>Оставь свой след</h3>
+                        <div class="input-group">
+                            <label for="userName">Ваше имя</label>
+                            <input type="text" id="userName" placeholder="Например, Алина">
+                        </div>
+                        <div class="input-group">
+                            <label for="userMessage">Ваше пожелание</label>
+                            <textarea id="userMessage" rows="4" placeholder="Напишите что-нибудь..."></textarea>
+                        </div>
+                        <button class="submit-wish-btn" onclick="addWishMessage()">Опубликовать</button>
+                    </div>
+                    <div class="wish-board" id="wishBoardContainer"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+<div class="main-container">
+<!-- НОВАЯ ВКЛАДКА: ГЛУБОКАЯ ЭНЦИКЛОПЕДИЯ БУРГУНДИ -->
+<div id="encyclopedia-section" class="tab-view font-enhanced-nebula">
+    <div class="editorial-intro animated-luxury-text">
+        «Бургунди — это не просто цвет, это целая визуальная культура, соединяющая в себе благородное наследие веков, глубину психоанализа и бескомпромиссную роскошь современного подиума».
+    </div>
+
+    <!-- ТЕКСТОВЫЙ БЛОК 1: ПОЛНЫЙ ГИД ПО КОЛОРИСТИКЕ -->
+    <div class="info-card-massive animated-card-slide">
+        <div class="luxury-badge">Раздел I</div>
+        <h2>Анатомия и Цифровой Код Оттенка</h2>
+        <p>С точки зрения физики цвета и колористической спецификации, бургунди представляет собой сложную синергию трех базовых векторов спектра: страстного и доминантного глубокого красного цвета, заземляющего древесно-коричневого подтона и едва уловимого чернильно-синего или пурпурного нюанса. Именно это триединство создает уникальный оптический эффект бархатной плотности.</p>
+        <p>В цифровом пространстве этот благородный тон имеет четкие математические координаты. В системе веб-дизайна HEX его классическим выражением считается <strong>#800020</strong>. В полиграфической модели CMYK, отвечающей за глубокую интерьерную и журнальную печать, формула выглядит как C:0%, M:100%, Y:75%, K:50%, где пятидесятипроцентное присутствие черного пигмента (Key-color) как раз и гарантирует ту самую монументальную, обволакивающую глубину, отличающую этот цвет от дешевых или кричащих оттенков алого.</p>
+        
+        <div class="tech-specs-expanded">
+            <div class="spec-row"><span>HEX Code:</span> <strong>#800020</strong></div>
+            <div class="spec-row"><span>RGB Percent:</span> <strong>50.2%, 0%, 12.5%</strong></div>
+            <div class="spec-row"><span>CMYK Formula:</span> <strong>(0, 100, 75, 50)</strong></div>
+            <div class="spec-row"><span>HSL Space:</span> <strong>345°, 100%, 25%</strong></div>
+        </div>
+    </div>
+
+    <!-- ТЕКСТОВЫЙ БЛОК 2: КУЛЬТУРНЫЙ И ПСИХОЛОГИЧЕСКИЙ КОД -->
+    <div class="info-card-massive animated-card-slide" style="animation-delay: 0.2s;">
+        <div class="luxury-badge">Раздел II</div>
+        <h2>Культурный Архетип и Влияние на Подсознание</h2>
+        <p>Психология восприятия цвета бургунди напрямую связана с его историческим бэкграундом. На протяжении столетий этот пигмент ассоциировался исключительно с концептом абсолютной власти, зрелости и триумфа. Человек, выбирающий бургунди в качестве доминирующего элемента в своем стиле или интерфейсе, транслирует окружающему миру сигналы о стабильности, высоком социальном статусе, ментальной силе и утонченном эстетическом интеллекте. Это цвет, который полностью лишен легкомыслия.</p>
+        <p>В отличие от ярко-красного, который провоцирует мгновенную агрессию, подсознательную тревогу или призыв к импульсивному действию, бургунди действует как мощный заземляющий фактор. Он стимулирует глубокую концентрацию, вызывает чувство защищенности и тепла, но при этом держит дистанцию, манифестируя так называемую «тихую роскошь» (Quiet Luxury). Этот оттенок не пытается привлечь внимание криком — он заставляет зрителя вглядываться в свои глубокие темные полутона.</p>
+    </div>
+
+    <!-- ТЕКСТОВЫЙ БЛОК 3: ИНТЕРЬЕР И ПРАВИЛА СОЧЕТАНИЙ -->
+    <div class="info-card-massive animated-card-slide" style="animation-delay: 0.4s;">
+        <div class="luxury-badge">Раздел III</div>
+        <h2>Осенний Трендовый Манифест и Законы Сочетания</h2>
+        <p>Каждую осень мировая индустрия моды и дизайна интерьеров переживает цикличное возвращение бургунди на передовые позиции. В контексте дизайна интерьеров этот тон превращает любое плоское пространство в роскошный кулуарный оазис. Он феноменально раскрывается на дорогих фактурных материалах: матовом тяжелом бархате, глянцевой итальянской коже, кашемировой шерсти грубой вязки и переливающемся шелковом сатине. Глубокие складки этих тканей создают завораживающую трехмерную игру теней.</p>
+        <p>Для создания безупречной визуальной гармонии колористы рекомендуют использовать следующие классические сочетания:</p>
+        <ul class="luxury-bullet-list">
+            <li><strong>Бургунди + Сусальное Золото:</strong> Абсолютный триумф классицизма. Золотые искры и металлический глянец подсвечивают винный тон изнутри.</li>
+            <li><strong>Бургунди + Графитовый Черный:</strong> Драматичный нуар, создающий строгую, кинематографичную и глубокую атмосферу ночного города.</li>
+            <li><strong>Бургунди + Сливочный Крем:</strong> Мягкий, контрастный контрапункт, который освежает интерьер, убирая излишнюю тяжесть.</li>
+            <li><strong>Бургунди + Оливковый Эмбиент:</strong> Сложное эко-сочетание, напоминающее увядающую роскошь королевских осенних садов.</li>
+        </ul>
+    </div>
+</div>
+
+
+<!-- ДОПОЛНИТЕЛЬНЫЕ УЛЬТРА-АНИМАЦИИ И СТИЛИ (Вставьте в самый конец вашего тега <style>) -->
+<style>
+    /* УСИЛЕННЫЕ ЭФФЕКТЫ ДЛЯ НОВОЙ ВКЛАДКИ */
+    .font-enhanced-nebula {
+        perspective: 1000px;
+    }
+
+    .info-card-massive {
+        background: linear-gradient(135deg, rgba(74, 4, 16, 0.4) 0%, rgba(18, 1, 4, 0.75) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.15);
+        border-radius: 24px;
+        padding: 45px;
+        margin-bottom: 35px;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .info-card-massive::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.08), transparent);
+        transform: skewX(-25deg);
+        transition: 0s;
+    }
+
+    .info-card-massive:hover::before {
+        left: 200%;
+        transition: 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .info-card-massive:hover {
+        transform: translateY(-8px) scale(1.01) rotateX(1deg);
+        border-color: var(--gold);
+        box-shadow: 0 30px 60px rgba(212, 175, 55, 0.18), 0 0 30px rgba(74, 4, 16, 0.5);
+    }
+
+    .luxury-badge {
+        display: inline-block;
+        font-family: -apple-system, sans-serif;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--gold);
+        border: 1px solid var(--gold);
+        padding: 4px 12px;
+        border-radius: 30px;
+        margin-bottom: 20px;
+        background: rgba(18, 1, 4, 0.5);
+    }
+
+    .info-card-massive h2 {
+        font-family: Georgia, serif;
+        font-size: 1.8rem;
+        color: var(--cream);
+        text-shadow: 0 0 15px rgba(251, 247, 244, 0.2);
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .info-card-massive p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: rgba(251, 247, 244, 0.85);
+        margin-bottom: 18px;
+        text-align: justify;
+    }
+
+    .tech-specs-expanded {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 30px;
+        border-top: 1px solid rgba(212, 175, 55, 0.15);
+        padding-top: 20px;
+    }
+
+    .spec-row {
+        background: rgba(8, 0, 2, 0.6);
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 1px solid rgba(251, 247, 244, 0.05);
+        font-family: monospace;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .spec-row span { color: rgba(251, 247, 244, 0.5); }
+    .spec-row strong { color: var(--gold); }
+
+    .luxury-bullet-list {
+        list-style: none;
+        margin-top: 15px;
+        padding-left: 5px;
+    }
+
+    .luxury-bullet-list li {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin-bottom: 12px;
+        color: rgba(251, 247, 244, 0.85);
+        position: relative;
+        padding-left: 25px;
+    }
+
+    .luxury-bullet-list li::before {
+        content: '✦';
+        position: absolute;
+        left: 0;
+        color: var(--gold);
+        text-shadow: 0 0 8px var(--gold);
+        animation: sparkAtoms 2s infinite alternate;
+    }
+
+    /* СЛОЖНЫЕ КИНЕМАТОГРАФИЧЕСКИЕ АНИМАЦИИ ВЫХОДА ИЗ ПОЛУМРАКА */
+    .animated-luxury-text {
+        animation: blurPulseText 4s ease-in-out infinite alternate;
+    }
+
+    .animated-card-slide {
+        opacity: 0;
+        transform: translateY(50px) rotateX(-5px);
+        animation: cardEntrance3D 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes cardEntrance3D {
+        to {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+    }
+
+    @keyframes blurPulseText {
+        0% { text-shadow: 0 2px 10px rgba(0,0,0,0.5); filter: drop-shadow(0 0 0px var(--gold-glow)); }
+        100% { text-shadow: 0 2px 20px rgba(212,175,55,0.3); filter: drop-shadow(0 0 8px var(--gold-glow)); }
+    }
+
+    @keyframes sparkAtoms {
+        0% { opacity: 0.5; transform: scale(0.8); }
+        100% { opacity: 1; transform: scale(1.2); }
+    }
+</style>
+
+   <footer>
+    прекрасный сайт
+</footer>
+
+
+    <script>
+        function switchSection(e, targetId) {
+            document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
+            document.querySelectorAll('.tab-trigger').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+            e.currentTarget.classList.add('active');
+        }
+
+        const quizData = [
+            {
+                q: "Откуда цвет Бургунди берет свое историческое название?",
+                options: ["Итальянский регион", "Французское винодельческое графство", "Мантия королей"],
+                correct: 1
+            },
+            {
+                q: "Какие три оттенка смешаны в основе классического бургунди?",
+                options: ["Красный, Коричневый, Синий", "Красный, Желтый, Черный", "Пурпурный, Серый, Розовый"],
+                correct: 0
+            }
+        ];
+
+        let activeQuestionIndex = 0;
+        let correctAnswersCounter = 0;
+
+        function renderQuizQuestion() {
+            const currentItem = quizData[activeQuestionIndex];
+            document.getElementById('questionField').innerText = currentItem.q;
+            const optionsBox = document.getElementById('optionsBox');
+            optionsBox.innerHTML = '';
+            document.getElementById('scoreIndicator').innerText = '';
+
+            currentItem.options.forEach((optText, index) => {
+                const button = document.createElement('button');
+                button.className = 'quiz-btn';
+                button.innerText = optText;
+                button.onclick = () => verifyUserAnswer(index, button);
+                optionsBox.appendChild(button);
+            });
+        }
+
+        function verifyUserAnswer(userSelection, clickedBtn) {
+            const currentItem = quizData[activeQuestionIndex];
+            const allOptionButtons = document.querySelectorAll('.quiz-btn');
+            allOptionButtons.forEach(btn => btn.disabled = true);
+
+            if (userSelection === currentItem.correct) {
+                clickedBtn.classList.add('correct');
+                correctAnswersCounter++;
+            } else {
+                clickedBtn.classList.add('wrong');
+                allOptionButtons[currentItem.correct].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                activeQuestionIndex++;
+                if (activeQuestionIndex < quizData.length) {
+                    renderQuizQuestion();
+                } else {
+                    document.getElementById('questionField').innerText = "Викторина завершена!";
+                    document.getElementById('optionsBox').innerHTML = '';
+                    document.getElementById('scoreIndicator').innerHTML = `Вы ответили правильно на ${correctAnswersCounter} из ${quizData.length} вопросов.<br><br><button class='tab-trigger' style='border-color:var(--gold);color:var(--gold)' onclick='resetQuiz()'>Заново</button>`;
+                }
+            }, 1400);
+        }
+
+        function resetQuiz() { activeQuestionIndex = 0; correctAnswersCounter = 0; renderQuizQuestion(); }
+
+        const wishes = [
+            { name: "Камила", msg: "Этот сайт передает атмосферу осеннего Pinterest на все 100%!" },
+            { name: "Эмиль", msg: "Анимация блёсток завораживает, очень красивая палитра." }
+        ];
+
+        const container = document.getElementById('wishBoardContainer');
+        function initWishes() { container.innerHTML = ''; wishes.forEach(w => drawWish(w.name, w.msg)); }
+        function drawWish(name, msg) {
+            const card = document.createElement('div');
+            card.className = 'wish-card';
+            card.innerHTML = `<p>"${msg}"</p><div class="author">— ${name}</div>`;
+            container.prepend(card);
+        }
+
+        function addWishMessage() {
+            const nameF = document.getElementById('userName');
+            const msgF = document.getElementById('userMessage');
+            if(!nameF.value.trim() || !msgF.value.trim()) return alert("Пожалуйста, заполните оба поля!");
+            drawWish(escapeHTML(nameF.value.trim()), escapeHTML(msgF.value.trim()));
+            nameF.value = ''; msgF.value = '';
+        }
+
+        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
+
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        const particles = [];
+        const mouse = { x: null, y: null, radius: 120 };
+
+        window.addEventListener('resize', () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; });
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width; this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5; this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2; this.baseSize = this.size;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > width) this.speedX *= -1;
+                if (this.y < 0 || this.y > height) this.speedY *= -1;
+                if (mouse.x && mouse.y) {
+                    let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) { this.size = this.baseSize * 3; } else if (this.size > this.baseSize) { this.size -= 0.1; }
+                } else if (this.size > this.baseSize) { this.size -= 0.1; }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function initParticles() { for (let i = 0; i < 60; i++) particles.push(new Particle()); }
+        function animateParticles() { ctx.clearRect(0, 0, width, height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateParticles); }
+
+        window.addEventListener('DOMContentLoaded', () => { renderQuizQuestion(); initWishes(); initParticles(); animateParticles(); });
+    </script>
+</body>
+</html>
+<!-- ======================================================= -->
+<!-- НАЧАЛО БЛОКА: ЦВЕТОВАЯ ЛАБОРАТОРИЯ И ЗОЛОТЫЕ СОЗВЕЗДИЯ  -->
+<!-- ======================================================= -->
+
+<div class="final-ecosystem-wrapper" style="max-width: 1200px; margin: 40px auto; padding: 0 20px; relative; z-index: 3;">
+    <div class="luxury-double-grid">
+        
+        <!-- 1. Интерактивная Лаборатория Цвета -->
+        <div class="luxury-lab-card">
+            <div class="luxury-badge">Лаборатория</div>
+            <h3>Сканер глубины Бордо</h3>
+            <p>Управляйте насыщенностью тренда. Двигайте ползунок, чтобы изменять плотность подтона от вишневого до глубокого нуара.</p>
+            
+            <div class="scanner-zone">
+                <div id="scannerColorPreview" class="scanner-preview">
+                    <span id="scannerHexLabel">#800020</span>
+                </div>
+                <div class="range-container">
+                    <input type="range" id="burgundyRange" min="5" max="50" value = "20" oninput="updateBurgundyScanner(this.value)">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Капсула времени Pinterest -->
+        <div class="luxury-lab-card">
+            <div class="luxury-badge">Капсула Времени</div>
+            <h3>Pinterest Цитата Дня</h3>
+            <p id="pinterestQuoteField">«Эстетика — это единственная форма бунта, оставшаяся в мире плоских шаблонов». — Октябрь, 2026.</p>
+            <div style="font-size: 0.8rem; color: var(--gold); letter-spacing: 1px; font-family: monospace; margin-top: 25px;" id="liveTimeIndicator">// STATUS: ACTIVE</div>
+        </div>
+    </div>
+</div>
+
+<!-- СТИЛИ ДЛЯ ЛАБОРАТОРИИ И СЕТКИ -->
+<style type="text/css">
+    .luxury-double-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 30px;
+    }
+    @media (max-width: 768px) { .luxury-double-grid { grid-template-columns: 1fr; } }
+
+    .luxury-lab-card {
+        background: linear-gradient(135deg, rgba(18, 1, 4, 0.9) 0%, rgba(74, 4, 16, 0.5) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        backdrop-filter: blur(15px);
+        transition: transform 0.4s ease, border-color 0.4s ease;
+    }
+    .luxury-lab-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--gold);
+    }
+    .luxury-lab-card h3 {
+        font-family: Georgia, serif;
+        font-size: 1.4rem;
+        color: var(--cream);
+        margin-bottom: 8px;
+    }
+    .luxury-lab-card p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: rgba(251,247,244,0.7);
+    }
+
+    /* Интерактивный сканер */
+    .scanner-zone {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .scanner-preview {
+        height: 60px;
+        border-radius: 10px;
+        background-color: #800020;
+        border: 1px solid rgba(251,247,244,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.1s ease;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+    }
+    .scanner-preview span {
+        font-family: monospace;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--cream);
+        letter-spacing: 2px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .range-container {
+        width: 100%;
+    }
+    /* Кастомизация ползунка в стиле Gold */
+    input[type=range]#burgundyRange {
+        width: 100%;
+        -webkit-appearance: none;
+        background: rgba(8,0,2,0.5);
+        height: 6px;
+        border-radius: 3px;
+        border: 1px solid rgba(212,175,55,0.3);
+        outline: none;
+    }
+    input[type=range]#burgundyRange::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--gold);
+        cursor: pointer;
+        box-shadow: 0 0 10px var(--gold);
+        transition: transform 0.1s;
+    }
+    input[type=range]#burgundyRange::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+    }
+</style>
+
+<!-- ЛОГИКА ДЛЯ СКАНЕРА И СЕТИ СОЗВЕЗДИЙ -->
+<script type="text/javascript">
+    // 1. ДИНАМИЧЕСКИЙ СКАНЕР ЦВЕТА
+    function updateBurgundyScanner(val) {
+        // Переводим значение из слайдера в HEX-код нужного оттенка бордового
+        let hexVal = parseInt(val).toString(16).padStart(2, '0');
+        let generatedHex = `#${hexVal}0020`.toUpperCase();
+        
+        // Обновляем плашку и надпись на лету
+        document.getElementById('scannerColorPreview').style.backgroundColor = generatedHex;
+        document.getElementById('scannerHexLabel').innerText = generatedHex;
+    }
+
+    // 2. ПИНТЕРЕСТ ЦИТАТЫ ПО ДНЯМ НЕДЕЛИ
+    const quotesCollection = [
+        "«Эстетика — это визуальное выражение внутренней тишины и гармонии».",
+        "«Бургунди — это не просто осенний тренд, это манифест уверенности в своей уникальности».",
+        "«Осень превращает улицы в живые мудборды, а чашка кофе и винный бархат завершают образ».",
+        "«Истинная роскошь никогда не кричит. Она обволакивает полумраком и светится золотом».",
+        "«В мире временного контента создавайте то, что имеет глубокие корни и аристократичный характер».",
+        "«Цвет бордо — это плотность времени, застывшая в каплях благородного каберне».",
+        "«Окружайте себя визуальной поэзией. Каждый пиксель вашего пространства должен вдохновлять»."
+    ];
+
+    function setupPinterestCapsule() {
+        const currentDay = new Date().getDay();
+        document.getElementById('pinterestQuoteField').innerText = quotesCollection[currentDay];
+        
+        // Живой трекер времени
+        setInterval(() => {
+            const now = new Date();
+           document.getElementById('liveTimeIndicator').innerText = `${now.toLocaleDateString()} — ${now.toLocaleTimeString()}`;
+
+        }, 1000);
+    }
+
+    // 3. ДОПОЛНЕНИЕ К ОСНОВНОМУ КАНВАСУ: КЛИК ДЛЯ СОЗДАНИЯ СВЕТЯЩИХСЯ СОЗВЕЗДИЙ
+    window.addEventListener('click', (e) => {
+        // Исключаем срабатывание на кнопках и инпутах
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        
+        if (typeof particles !== 'undefined' && particles.length > 0 && typeof ctx !== 'undefined') {
+            const clickX = e.clientX;
+            const clickY = e.clientY;
+            
+            let tempInterval = setInterval(() => {
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+                ctx.lineWidth = 0.6;
+                particles.forEach(p => {
+                    let dx = clickX - p.x;
+                    let dy = clickY - p.y;
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 150) { // Радиус связей
+                        ctx.beginPath();
+                        ctx.moveTo(clickX, clickY);
+                        ctx.lineTo(p.x, p.y);
+                        ctx.stroke();
+                    }
+                });
+            }, 1000 / 60);
+
+            // Стираем линии созвездий через 400мс
+            setTimeout(() => { clearInterval(tempInterval); }, 400);
+        }
+    });
+
+    window.addEventListener('DOMContentLoaded', setupPinterestCapsule);
+</script>
+<!-- ======================================================= -->
+<!-- КОНЕЦ БЛОКА: ЦВЕТОВАЯ ЛАБОРАТОРИЯ И ЗОЛОТЫЕ СОЗВЕЗДИЯ   -->
+<!-- ======================================================= -->
+</html>
+<!-- ======================================================= -->
+<!-- НАЧАЛО БЛОКА: ОСЕННЯЯ ИНТЕРАКТИВНАЯ ЭКОСИСТЕМА         -->
+<!-- ======================================================= -->
+
+<!-- HTML-разметка новых элементов -->
+<div class="ecosystem-container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px; relative; z-index: 3;">
+    <!-- Виджет цветовых палитр -->
+    <div class="palette-widget-box">
+        <div class="luxury-badge">Интерактив</div>
+        <h3>Генератор осенних сочетаний</h3>
+        <p>Нажмите на кнопку ниже, чтобы подобрать идеальный сопутствующий оттенок к Burgundy (#800020) по правилам колористики.</p>
+        
+        <div class="palette-display-zone">
+            <div class="palette-color-block" style="background-color: #800020;">
+                <span>Burgundy</span>
+                <strong>#800020</strong>
+            </div>
+            <div class="palette-color-block" id="dynamicColorBlock" style="background-color: #d4af37;" onclick="copyWidgetColor('#d4af37')">
+                <span id="dynamicColorName">Сусальное Золото</span>
+                <strong id="dynamicColorHex">#D4AF37</strong>
+                <div class="widget-tooltip">Кликни, чтобы скопировать</div>
+            </div>
+        </div>
+        
+        <button class="submit-wish-btn" style="margin-top: 20px; max-width: 250px;" onclick="generateNextAutumnColor()">Сгенерировать сочетание</button>
+    </div>
+</div>
+
+<!-- Кнопка "Наверх" -->
+<button id="backToTopBtn" title="Наверх">✦</button>
+
+<!-- Стили для новых элементов -->
+<style type="text/css">
+    .palette-widget-box {
+        background: linear-gradient(135deg, rgba(18, 1, 4, 0.8) 0%, rgba(74, 4, 16, 0.4) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        backdrop-filter: blur(10px);
+    }
+    .palette-widget-box h3 {
+        font-family: Georgia, serif;
+        font-size: 1.5rem;
+        color: var(--cream);
+        margin-bottom: 10px;
+    }
+    .palette-widget-box p {
+        font-size: 1rem;
+        color: rgba(251,247,244,0.75);
+        margin-bottom: 25px;
+    }
+    .palette-display-zone {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    @media (max-width: 600px) { .palette-display-zone { grid-template-columns: 1fr; } }
+    
+    .palette-color-block {
+        height: 100px;
+        border-radius: 12px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid rgba(251,247,244,0.1);
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .palette-color-block:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .palette-color-block span {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: rgba(8,0,2,0.6);
+        padding: 2px 8px;
+        border-radius: 4px;
+        width: fit-content;
+    }
+    .palette-color-block strong {
+        font-family: monospace;
+        font-size: 1.2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    
+    .widget-tooltip {
+        position: absolute;
+        bottom: -25px; left: 50%;
+        transform: translateX(-50%);
+        background: var(--cherry-black);
+        color: var(--gold);
+        border: 1px solid var(--gold);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        white-space: nowrap;
+    }
+    #dynamicColorBlock:hover .widget-tooltip {
+        opacity: 1;
+    }
+
+    /* Стили падающих листьев */
+    .autumn-leaf {
+        position: fixed;
+        top: -50px;
+        z-index: 1;
+        pointer-events: auto;
+        cursor: pointer;
+        user-select: none;
+        font-size: 24px;
+        animation: fallLinear linear forwards;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .autumn-leaf:hover {
+        transform: scale(1.4) rotate(45deg) !important;
+    }
+    @keyframes fallLinear {
+        0% { top: -50px; transform: translateX(0) rotate(0deg); opacity: 0; }
+        10% { opacity: 0.8; }
+        90% { opacity: 0.8; }
+        100% { top: 105vh; transform: translateX(100px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Кнопка наверх */
+    #backToTopBtn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 99;
+        background: var(--burgundy-main);
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        transition: all 0.3s ease;
+    }
+    #backToTopBtn:hover {
+        background: var(--burgundy-bright);
+        transform: translateY(-3px);
+        box-shadow: 0 0 15px var(--gold-glow);
+    }
+</style>
+
+<!-- Скрипты интерактивной экосистемы -->
+<script type="text/javascript">
+    // 1. ЛОГИКА ГЕНЕРАТОРА ПАЛИТРЫ
+    const autumnColors = [
+        { name: "Сусальное Золото", hex: "#D4AF37" },
+        { name: "Шампань", hex: "#F1E9D2" },
+        { name: "Графитовый Нуар", hex: "#1C1C1C" },
+        { name: "Оливковый Твид", hex: "#556B2F" },
+        { name: "Тыквенный Латте", hex: "#D97443" },
+        { name: "Кашемировый Крем", hex: "#EDE6D6" },
+        { name: "Пыльная Роза", hex: "#B76E79" }
+    ];
+    let currentColorIndex = 0;
+
+    function generateNextAutumnColor() {
+        currentColorIndex = (currentColorIndex + 1) % autumnColors.length;
+        const targetColor = autumnColors[currentColorIndex];
+        
+        const block = document.getElementById('dynamicColorBlock');
+        const nameSpan = document.getElementById('dynamicColorName');
+        const hexStrong = document.getElementById('dynamicColorHex');
+        
+        block.style.backgroundColor = targetColor.hex;
+        nameSpan.innerText = targetColor.name;
+        hexStrong.innerText = targetColor.hex;
+        
+        block.setAttribute('onclick', `copyWidgetColor('${targetColor.hex}')`);
+    }
+
+    function copyWidgetColor(hexCode) {
+        const input = document.createElement('input');
+        input.value = hexCode;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        
+        const tooltip = document.querySelector('#dynamicColorBlock .widget-tooltip');
+        tooltip.innerText = "Скопировано!";
+        setTimeout(() => { tooltip.innerText = "Кликни, чтобы скопировать"; }, 1000);
+    }
+
+    // 2. СИСТЕМА ЛИСТОПАДА (ФОНОВЫЙ ЖИВОЙ ЭФФЕКТ)
+    const leafSymbols = ['🍁', '🍂', '🍃'];
+    
+    function createLeaf() {
+        const leaf = document.createElement('div');
+        leaf.className = 'autumn-leaf';
+        leaf.innerText = leafSymbols[Math.floor(Math.random() * leafSymbols.length)];
+        
+        // Рандомные настройки падения
+        leaf.style.left = Math.random() * 100 + 'vw';
+        const duration = Math.random() * 5 + 5; // от 5 до 10 секунд
+        leaf.style.animationDuration = duration + 's';
+        
+        // Оттенок свечения (золотой или медный)
+        leaf.style.textShadow = Math.random() > 0.5 ? '0 0 10px #d4af37' : '0 0 10px #d97443';
+        
+        // Удаление при клике на листик
+        leaf.addEventListener('click', () => {
+            leaf.style.opacity = '0';
+            leaf.style.transform = 'scale(0)';
+            setTimeout(() => { leaf.remove(); }, 200);
+        });
+
+        document.body.appendChild(leaf);
+
+        // Удаление после завершения анимации падения
+        setTimeout(() => { leaf.remove(); }, duration * 1000);
+    }
+
+    // Запускаем листопад раз в 3 секунды, чтобы не перегружать ПК
+    setInterval(createLeaf, 3000);
+
+    // 3. ФУНКЦИОНАЛ КНОПКИ "НАВЕРХ"
+    const topBtn = document.getElementById("backToTopBtn");
+    window.onscroll = function() {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            topBtn.style.display = "flex";
+        } else {
+            topBtn.style.display = "none";
+        }
+    };
+    
+    topBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+<!-- ======================================================= -->
+<!-- КОНЕЦ БЛОКА: ОСЕННЯЯ ИНТЕРАКТИВНАЯ ЭКОСИСТЕМА           -->
+<!-- ======================================================= -->
+
